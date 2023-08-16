@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
-
-import Header from './components/Layout/Header';
-import Meals from './components/Medicines/Medicines';
-import Cart from './components/Cart/Cart';
-import CartProvider from './store/CartProvider';
-import NewExpenseForm from './components/NewMedicines/NewMedicinesForm'
+import React from "react";
+import NewMedicineList from "./components/medicineEntry/NewMedicineList";
+import MedicineHouse from "./components/MedicineStore/MedicineHouse";
+import { useState } from "react";
+import Cart from "./components/cart/Cart";
+import CartProvider from "./components/cartStore/CartProvider";
 
 function App() {
+  const [medicines, setMedicines] = useState("");
   const [isItemShow, setIsItemShow] = useState(false)
-  const [newItems, setNewItems] = useState(false)
 
   const showCartItemHandler = () =>{
     setIsItemShow(true)
@@ -18,18 +17,23 @@ function App() {
     setIsItemShow(false)
   }
 
-  const addNewItemHanlder = ()=>{
-    setNewItems(true)
-  }
+  const saveMedicineInList = (medicine) => {
+    setMedicines((prev) => {
+      return [medicine, ...prev];
+    });
+    console.log(medicines);
+  };
+
   return (
-    <CartProvider>
-      {isItemShow && <Cart onClose={hideCartItemHandler}/>}
-      <Header onShowCart={showCartItemHandler}/>
-      <main>
-        <NewExpenseForm />
-        <Meals onAddItems={addNewItemHanlder}/>
-      </main>
-    </CartProvider>
+    <React.Fragment>
+      <CartProvider>
+        <div>Medicine Store</div>
+        <NewMedicineList onAddMedicines={saveMedicineInList} />
+        <MedicineHouse items={medicines} />
+        {isItemShow && <Cart onClose={hideCartItemHandler}/>}
+        <button onClick={showCartItemHandler}>Cart</button>
+      </CartProvider>
+    </React.Fragment>
   );
 }
 
